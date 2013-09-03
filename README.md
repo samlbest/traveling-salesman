@@ -28,6 +28,8 @@ Output will be to mysolution.txt. The first line is the total distance traveled,
 6
 7
 ```
+Compile the program with ```make``` then run it with the command ```./tsp [input_file]```
+
 ###Problem Description###
 The traveling salesman problem was first formulated in 1930 [1]. The goal of the problem is, given a
 list of cities and their locations, to find the shortest possible path that passes through each city exactly
