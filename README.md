@@ -3,6 +3,31 @@ traveling-salesman
 
 ##Traveling Salesman Problem C++ Implementation##
 
+###Usage###
+Input files must be have one city per line identified by a unique number, followed by the Euclidean coordinates. Here is an example:
+
+```
+0 200 800
+1 3600 2300
+2 3100 3300
+3 4700 5750
+4 5400 5750
+5 5608 7103
+6 4493 7102
+7 3600 6950
+```
+Output will be to mysolution.txt. The first line is the total distance traveled, followed by the order of visits:
+```
+18877
+0
+1
+2
+3
+4
+5
+6
+7
+```
 ###Problem Description###
 The traveling salesman problem was first formulated in 1930 [1]. The goal of the problem is, given a
 list of cities and their locations, to find the shortest possible path that passes through each city exactly
