@@ -1,9 +1,9 @@
 traveling-salesman
 ==================
 
-Traveling Salesman Problem C++ Implementation
+##Traveling Salesman Problem C++ Implementation##
 
-Problem Description:
+###Problem Description###
 The traveling salesman problem was first formulated in 1930 [1]. The goal of the problem is, given a
 list of cities and their locations, to find the shortest possible path that passes through each city exactly
 once and ends at the starting city. There are two primary forms of the problem. One is the graph-based
@@ -16,7 +16,7 @@ can move freely from one city to any other. In this form of the problem, distanc
 calculated using the Euclidean distance formula. For this project, we tackle the Euclidean version of the
 problem.
 
-Algorithm:
+###Algorithm###
 Algorithms for optimization of the TSP usually are either based on thoughtful construction of a new
 tour, improvement upon an existing tour, or a combination of both.
 
@@ -31,7 +31,7 @@ an optimized construction, and repeatedly perform operations that aim to reduce 
 The approach I used to solve the problem was a combination of a simple construction algorithm, the
 nearest neighbor heuristic, and an improvement algorithm using a local search heuristic called 2-opt.
 
-Nearest Neighbor [2]:
+####Nearest Neighbor [2]####
 The principle behind this algorithm is simple. It constructs a tour by starting with a list of all the cities
 and their coordinates. The starting city is chosen arbitrarily and moved to a list of cities representing
 the solution. Then, out of the remaining cities, the city nearest in distance to the starting city is moved
@@ -39,13 +39,13 @@ to the solution list. This is repeated, using the most recently added city in th
 city, until all cities have been moved to the solution. The tour order will be the order of the cities in the
 solution list, and the final move will be to the start of the list.
 
-This algorithm can be summarized by the following steps:
+*This algorithm can be summarized by the following steps:*
 1. Create a set of all cities (U) and an ordered set of cities representing a tour (V).
 1. Choose arbitrary starting city from V, remove from V and add to U.
 2. Select the city in V closest to the latest city added to U, remove from V and add to U.
 3. Repeat step 2 until no cities remain in V.
 
-2-opt neighbor search [2, 3]:
+####2-opt neighbor search [2, 3]####
 After generating a tour with the nearest neighbor algorithm, I perform a series of exchanges to improve
 upon the original tour. To use the 2-opt heuristic, the first step is to generate an initial tour. My originalapproach was to run the nearest neighbor algorithm repeatedly to find the starting point that resulted in
 the best initial tour, but I found that the best starting tour didn't always result in the best improved tour
@@ -83,7 +83,7 @@ make sure I had the optimal value, but the 2-opt algorithm had already found it.
 were too large for the the brute force algorithm to find a solution in reasonable time, even with as few
 as 19 cities.
 
-Sources:
+###Sources###
 [1] http://en.wikipedia.org/wiki/Travelling_salesman_problem
 [2] http://www.seas.gwu.edu/~simhaweb/champalg/tsp/tsp.html
 [3] http://www2.research.att.com/~dsj/papers/TSPchapter.pdf
