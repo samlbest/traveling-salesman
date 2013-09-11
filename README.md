@@ -104,7 +104,7 @@ method and implemented all the code that generates sorted neighbor lists for eac
 been able to get it to work in practice.
 
 For all of my solutions, I used the nearest neighbor with a normal 2-opt, running through all possible
-starting points when practical (I didn't have time to make it all the way through test instance 8). After
+starting points when practical (I didn't have time to try every starting point for test instance 8 [2048 cities]). After
 seeing the small size of the first test input, I also wrote code implementing the brute force algorithm to
 make sure I had the optimal value, but the 2-opt algorithm had already found it. The other test cases
 were too large for the the brute force algorithm to find a solution in reasonable time, even with as few
