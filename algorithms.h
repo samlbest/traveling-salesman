@@ -14,6 +14,8 @@
 
 using namespace std;
 
+const char OUTPUT_FN[] = "mysolution.txt";
+
 class tsp
 {
     public:

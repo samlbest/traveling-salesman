@@ -12,7 +12,6 @@
 #include <fstream>
 #include <cstdlib>
 
-
 using namespace std;
 
 int done = 0;
@@ -27,14 +26,16 @@ tsp::tsp(const char * filename)
 tsp::tsp(tsp & source)
 {
     int size = source.original_list.size();
-    for (int i = 0; i < size; ++i)
+    for (int i = 0; i < size; ++i) {
         original_list.push_back(new city(*source.original_list[i]));
-        
+    }
+
     size = source.solution.size();
-    
-    for (int i = 0; i < size; ++i)
+
+    for (int i = 0; i < size; ++i) {
         solution.push_back(new city(*source.solution[i]));
-        
+    }
+
     num_cities = source.num_cities;
 }
 
@@ -52,10 +53,10 @@ int tsp::read_file(const char * filename)
     int id_read = 0;
     int x_read = 0;
     int y_read = 0;
-    
+
     original_list.clear();
     ifstream read(filename); //open file
-    
+
     if (!read)
     {
         cout << "error";
@@ -67,7 +68,7 @@ int tsp::read_file(const char * filename)
         original_list.push_back(new city(id_read, x_read, y_read, id_read, false));
         ++added;
     }
-    
+
     read.close();
     return added;
 }
@@ -78,13 +79,13 @@ int tsp::brute_force_wrapper()
     int distance = 0;
     int min_distance = 9999999;
     deque <city*> best_path;
-    
+
     if (solution.empty())
         nearest_neighbor_basic(0);
 
     brute_force(best_path, min_distance, num_cities);
     copy_city_deque(best_path, solution); //copy best solution into solution
-    
+
     distance = get_solution_distance();
     write_solution("bruteforce.txt");
     return distance;
@@ -92,9 +93,9 @@ int tsp::brute_force_wrapper()
 
 //Recursive brute force algorithm to calculate all permutations of tours and find the optimal one.
 void tsp::brute_force(deque <city*> & best_path, int & min_distance, int cities_left)
-{   
+{
     int current_dist = 0;
-    
+
     signal(SIGTERM, end_opt);
     for (int i = 0; !done && i < cities_left; ++i)
     {
@@ -106,11 +107,11 @@ void tsp::brute_force(deque <city*> & best_path, int & min_distance, int cities_
             cout << min_distance << endl;
             copy_city_deque(solution, best_path);
         }
-            
+
         brute_force(best_path, min_distance, cities_left - 1); //shift ending position of rotation left 1 in each recursion
 
     }
-   
+
    return;
 }
 
@@ -130,7 +131,7 @@ int tsp::nearest_neighbor()
     int total_dist = 0;
     int best_start_distance = 9999999;
     int last_run = 0;
-    
+
     //Run through entire 2-opt optimization for each city, write best index.
     for (int i = 0; !done && i < num_cities; ++i)
     {
@@ -140,18 +141,18 @@ int tsp::nearest_neighbor()
         {
             best_start_distance = last_run;
             cout << "Writing solution " << best_start_distance << endl;
-            write_solution("mysolution.txt");  //write each time an improvement is found
+            write_solution(OUTPUT_FN);  //write each time an improvement is found
         }
     }
 
     total_dist = get_solution_distance();
     if (best_start_distance <= total_dist)
         return best_start_distance;     //solution already written
-        
+
     else
     {
         cout << "Writing solution " << total_dist << endl;
-        write_solution("mysolution.txt");       //write current solution (midway through 2-opt)
+        write_solution(OUTPUT_FN);       //write current solution (midway through 2-opt)
         return best_start_distance;
     }
 }
@@ -165,9 +166,9 @@ int tsp::nearest_neighbor_basic(int start_index)
     int current_dist = 0;
     int closest_index = 0;
     int current_num = num_cities;
-    deque <city*> temp;                         
+    deque <city*> temp;
     copy_city_deque(original_list, temp);       //save original list
-    
+
     solution.clear();
     solution.push_back(original_list[start_index]);     //move first city to solution
     original_list.erase(original_list.begin() + start_index);       //erase from original_list
@@ -189,11 +190,11 @@ int tsp::nearest_neighbor_basic(int start_index)
         total_dist += closest;
         solution.push_back(original_list[closest_index]);
         original_list.erase(original_list.begin() + closest_index);
-            
+
         --current_num;
         ++cities_added;
         }
-    
+
     copy_city_deque(temp, original_list);        //restore original list
     return total_dist + solution[0]->dist(solution[cities_added-1]);
 }
@@ -204,30 +205,30 @@ int tsp::two_change()
     deque <city*> new_path;
     int min_distance = get_solution_distance();
     bool start_over = false;
-    
+
     signal(SIGTERM, end_opt);   //signal handler, ends optimization if it receives SIGTERM
     while(!done)
-    {   
+    {
         start_over = false;
         for (int i = 1; i < num_cities && !start_over; ++i)
-        {               
+        {
             for (int j = i+1; j < num_cities-1 && !start_over; ++j)
             {
-                //only check moves that will reduce distance                   
+                //only check moves that will reduce distance
                 if (solution[i-1]->dist(solution[j]) + solution[i]->dist(solution[j+1]) < solution[i-1]->dist(solution[i]) + solution[j]->dist(solution[j+1]))
                 {
                     swap_two(i, j);
                     min_distance = get_solution_distance();
                     start_over = true;
                 }
-                
+
                 else
                     start_over = false;
             }
          }
-         
+
          if (!start_over)
-            break;  
+            break;
     }
     return min_distance;
 }
@@ -238,9 +239,9 @@ int tsp::two_opt()
     deque <city*> new_path;
     int min_distance = get_solution_distance();
     int k = 0;
-    
+
         for (int i = 1; i < num_cities ; ++i)
-        {           
+        {
             k = 1;
             fix_positions();
             while (k <= 5 && solution[i]->dist(solution[i]->get_neighbor(k)) < solution[i-1]->dist(solution[i]))
@@ -252,8 +253,8 @@ int tsp::two_opt()
             }
             fix_positions();
         }
-        
-   
+
+
     return min_distance;
 }
 
@@ -262,13 +263,13 @@ int tsp::swap_two(int i, int k)
 {
     deque <city*> temp;
     int count = 0;
-    
+
     //Reverse order
     for (int x = k; x >= i; --x)
     {
         temp.push_back(solution[x]);
     }
-            
+
     for (int x = i; x <= k; ++x)
     {
         solution[x] = temp[count];
@@ -287,7 +288,7 @@ int tsp::get_solution_distance()
     {
         total_dist += solution[i]->dist(solution[i+1]);
     }
-    
+
     total_dist += solution[0]->dist(solution[num_cities-1]);
     return total_dist;
 }
@@ -301,12 +302,12 @@ void tsp::write_solution(const char * file_name)
     {
         write << distance << '\n';
     }
-    
+
     for (int i = 0; i < num_cities; ++i)
         solution[i]->write_out(write);
-        
+
     write.close();
-    
+
     return;
 }
 
@@ -318,7 +319,7 @@ void tsp::display_neighbor_lists()
         cout << "LIST " << i << endl;
         solution[i]->display_neighbor_list();
     }
-        
+
     return;
 }
 
